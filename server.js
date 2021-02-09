@@ -15,9 +15,23 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/budget", {
+
+
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/budget", {
   useNewUrlParser: true,
-  useFindAndModify: false
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+});
+
+const connection = mongoose.connection;
+
+connection.on("connected", () => {
+  console.log("Mongoose successfully connected.");
+});
+
+connection.on("error", (err) => {
+  console.log("Mongoose connection error: " + err);
 });
 
 // routes
